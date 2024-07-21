@@ -1,0 +1,67 @@
+/* styles.css */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(6, 50px);
+    grid-template-rows: repeat(6, 50px);
+    border: 2px solid #000;
+}
+
+.grid-cell {
+    border: 1px solid #ddd; /* Light border for grid cells */
+    box-sizing: border-box;
+}
+
+.grid-cell.highlight {
+    background-color: lightgrey;
+}
+
+.block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: grab;
+    box-sizing: border-box;
+    border: 1px solid #000; /* Added border for better visualization */
+}
+
+.block.red {
+    background-color: red;
+}
+
+.block.green {
+    background-color: green;
+}
+
+.block.blue {
+    background-color: blue;
+}
+
+.block.two {
+    width: 50px;
+    height: 100px;
+}
+
+.block.three {
+    width: 50px;
+    height: 150px;
+}
+
+.block.horizontal-two {
+    width: 100px;
+    height: 50px;
+}
+
+.block.horizontal-three {
+    width: 150px;
+    height: 50px;
+}
