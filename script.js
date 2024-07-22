@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     let currentDraggedBlock = null;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
     const blocks = [
         { id: 1, color: 'green', size: 2, x: 1, y: 0 },
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 9, color: 'red', size: 3, x: 3, y: 2 },
         { id: 10, color: 'red', size: 2, x: 4, y: 4 },
         { id: 11, color: 'red', size: 2, x: 5, y: 1 },
-        
+
         { id: 12, color: 'blue', size: 2, x: 0, y: 2 }
     ];
 
@@ -23,12 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check for out of bounds
         if (block.color === 'green' || block.color === 'blue') {
             if (newX < 0 || newX + block.size > 6 || newY < 0 || newY >= 6) {
-                console.log(1)
                 return false;
             }
         } else if (block.color === 'red') {
             if (newX < 0 || newX >= 6 || newY < 0 || newY + block.size > 6) {
-                console.log(2)
                 return false;
             }
         }
@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 increment = j;
                             }
                             if (newX + i === otherBlock.x && newY === otherBlock.y + increment) {
-                                console.log(3)
                                 return false;
                             }
                         }
@@ -59,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 increment = j;
                             }
                             if (newX === otherBlock.x + increment && newY + i === otherBlock.y) {
-                                console.log(4)
                                 return false;
                             }
                         }
@@ -118,13 +116,78 @@ document.addEventListener('DOMContentLoaded', () => {
         div.textContent = block.id;
         gameBoard.appendChild(div);
 
+        // Mouse event listeners
         div.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', JSON.stringify(block));
             currentDraggedBlock = block;
         });
 
+        // Touch event listeners
+        div.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            currentDraggedBlock = block;
+        });
+
+        div.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!currentDraggedBlock) return;
+
+            const touch = e.touches[0];
+            const targetColumn = Math.floor((touch.clientX - gameBoard.offsetLeft) / 50);
+            const targetRow = Math.floor((touch.clientY - gameBoard.offsetTop) / 50);
+
+            const existingBlock = blocks.find(b => b.id === currentDraggedBlock.id);
+            let newX = existingBlock.x;
+            let newY = existingBlock.y;
+
+            if (existingBlock.color === 'green' || existingBlock.color === 'blue') {
+                newX = targetColumn;
+            } else if (existingBlock.color === 'red') {
+                newY = targetRow;
+            }
+
+            if (isPositionValid(existingBlock, newX, newY)) {
+                highlightPosition(existingBlock, newX, newY);
+            } else {
+                clearHighlights();
+            }
+        });
+
+        div.addEventListener('touchend', (e) => {
+            clearHighlights();
+            if (!currentDraggedBlock) return;
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+
+            const targetColumn = Math.floor((touchEndX - gameBoard.offsetLeft) / 50);
+            const targetRow = Math.floor((touchEndY - gameBoard.offsetTop) / 50);
+
+            const existingBlock = blocks.find(b => b.id === currentDraggedBlock.id);
+            let newX = existingBlock.x;
+            let newY = existingBlock.y;
+
+            if (existingBlock.color === 'green' || existingBlock.color === 'blue') {
+                newX = targetColumn;
+            } else if (existingBlock.color === 'red') {
+                newY = targetRow;
+            }
+
+            if (isPositionValid(existingBlock, newX, newY)) {
+                existingBlock.x = newX;
+                existingBlock.y = newY;
+
+                const blockElement = gameBoard.querySelector(`.block[data-id='${currentDraggedBlock.id}']`);
+                blockElement.style.gridColumnStart = existingBlock.x + 1;
+                blockElement.style.gridRowStart = existingBlock.y + 1;
+            }
+
+            currentDraggedBlock = null;
+        });
     });
 
+    // Mouse drag-and-drop event listeners
     gameBoard.addEventListener('dragover', (e) => {
         e.preventDefault();
         if (!currentDraggedBlock) return;
