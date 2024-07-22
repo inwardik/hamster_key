@@ -3,20 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentDraggedBlock = null;
 
     const blocks = [
-        { id: 1, color: 'green', size: 2, x: 4, y: 0 },
-        { id: 2, color: 'green', size: 2, x: 0, y: 3 },
-        { id: 3, color: 'green', size: 2, x: 1, y: 5 },
-        { id: 4, color: 'green', size: 2, x: 3, y: 4 },
+        { id: 1, color: 'green', size: 2, x: 1, y: 0 },
+        { id: 2, color: 'green', size: 2, x: 4, y: 0 },
+        { id: 3, color: 'green', size: 2, x: 3, y: 1 },
+        { id: 4, color: 'green', size: 2, x: 4, y: 3 },
+        { id: 5, color: 'green', size: 2, x: 2, y: 5 },
+
+        { id: 6, color: 'red', size: 2, x: 0, y: 0 },
+        { id: 7, color: 'red', size: 3, x: 1, y: 3 },
+        { id: 8, color: 'red', size: 2, x: 2, y: 1 },
+        { id: 9, color: 'red', size: 3, x: 3, y: 2 },
+        { id: 10, color: 'red', size: 2, x: 4, y: 4 },
+        { id: 11, color: 'red', size: 2, x: 5, y: 1 },
         
-        { id: 5, color: 'red', size: 2, x: 0, y: 1 },
-        { id: 6, color: 'red', size: 2, x: 0, y: 4 },
-        { id: 7, color: 'red', size: 3, x: 1, y: 0 },
-        { id: 8, color: 'red', size: 2, x: 2, y: 3 },
-        { id: 9, color: 'red', size: 2, x: 3, y: 0 },
-        { id: 10, color: 'red', size: 3, x: 4, y: 1 },
-        { id: 11, color: 'red', size: 2, x: 5, y: 4 },
-        
-        { id: 12, color: 'blue', size: 2, x: 2, y: 2 }
+        { id: 12, color: 'blue', size: 2, x: 0, y: 2 }
     ];
 
     function isPositionValid(block, newX, newY) {
@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.style.gridRowStart = block.y + 1;
         div.draggable = true;
         div.dataset.id = block.id;
+        div.textContent = block.id;
         gameBoard.appendChild(div);
 
         div.addEventListener('dragstart', (e) => {
